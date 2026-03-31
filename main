@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Random IMDb Title</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #fff;
+      color: #000;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="findTitle()">Open Random Movie/Show</button>
+  <div id="status"></div>
+
+  <script>
+    async function findTitle(){
+      const status = document.getElementById("status");
+      status.textContent = "Searching...";
+      
+      while(true){
+        const id = Math.floor(Math.random()*9000000)+1000000;
+        const imdbID = "tt" + id;
+
+        try {
+          const res = await fetch(`https://www.omdbapi.com/?apikey=thewdb&i=${imdbID}`);
+          const data = await res.json();
+
+          if(data.Response === "True" && (data.Type === "movie" || data.Type === "series")){
+            status.textContent = "Opening: " + data.Title + " (" + data.Type + ")";
+            window.open("https://www.imdb.com/title/" + imdbID + "/", "_blank");
+            return;
+          }
+
+        } catch(e){
+          console.log(e);
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
